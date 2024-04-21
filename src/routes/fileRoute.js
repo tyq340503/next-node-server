@@ -20,8 +20,8 @@ fileRoute.get('/', (req, res) => {
 fileRoute.post('/upload', upload.single('file'), (req, res) => {
     try {
       const { originalname, filename, size, mimetype } = req.file;
-  
-      res.json({ message: 'File uploaded successfully', filename });
+      fs.renameSync(path.join('uploads/', filename), path.join('uploads/', originalname));
+      res.json({ message: 'File uploaded successfully', originalname });
     } catch (error) {
       console.error('Error uploading file:', error);
       res.status(500).json({ message: 'Error uploading file' });
@@ -30,11 +30,14 @@ fileRoute.post('/upload', upload.single('file'), (req, res) => {
 
 fileRoute.get('/files', (req, res) => {
     try{
-        const { originalname, filename, size, mimetype } = req.file;
-  
-        res.json({ message: 'File uploaded successfully', filename });
+      fs.readdir('uploads/', (err, files) => {
+        if (err) {
+          console.error('Error reading directory:', err);
+          return res.status(500).json({ message: 'Error reading directory' });
+        }
+        res.json({ files });
+      });
     } catch(error) {
-        console.error('Error uploading file:', error);
         res.status(500).json({ message: 'Error getting file' });
     }
 });
@@ -42,10 +45,10 @@ fileRoute.get('/files', (req, res) => {
 fileRoute.get('/download/:filename', (req, res) => {
     try {
       const filename = req.params.filename;
-      const filePath = path.join(__dirname, 'uploads', filename);
-  
+      const filePath = path.join(__dirname, '../../uploads', filename);
+
       if (fs.existsSync(filePath)) {
-        res.download(filePath, filename);
+        res.download(`uploads/${filename}`);
       } else {
         res.status(404).json({ message: 'File not found' });
       }
