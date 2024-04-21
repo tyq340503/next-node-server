@@ -1,4 +1,3 @@
-// const http = require('http');
 const express = require("express");
 const fileRoute = require("./src/routes/fileRoute");
 const dateRoute = require("./src/routes/dateRoute");

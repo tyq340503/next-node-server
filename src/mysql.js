@@ -108,6 +108,4 @@ sqlRoute.delete('/delete', function (req, res) {
     }
 })
 
-// connection.end();
-
 module.exports = sqlRoute;
