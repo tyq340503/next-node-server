@@ -17,10 +17,10 @@ transRoute.get('/ttos', (req, res) => {
 transRoute.get('/stot', (req, res) => {
     try {
         const query = req.query;
-        console.log(req);
         const traditional = opencc.simplifiedToTraditional(query.text);
         res.status(200).json({ text: traditional});
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Server Side Error' });
     }
 });
